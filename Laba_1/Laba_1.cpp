@@ -13,7 +13,6 @@
 #include <cstdlib> // генерация случайных чисел
 #include <ctime> // работа с временем для инициализации генератора случайных чисел
 
-
 using std::cin;
 using std::cout;
 using std::string;
