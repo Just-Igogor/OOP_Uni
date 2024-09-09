@@ -4,6 +4,8 @@
 Лабораторная работа 1
 09.09.2024*/
 
+#define __CRTDBG_MAP_ALLOC
+#include <crtdbg.h> // для обнаружения утечек памяти в Visual Studio
 #include <iostream> // ввод/вывод данных (консольное взаимодействие)
 #include <fstream> // работа с файлами (чтение данных из файла)
 #include <string> // работа со строками
@@ -11,19 +13,28 @@
 #include <cstdlib> // генерация случайных чисел
 #include <ctime> // работа с временем для инициализации генератора случайных чисел
 
-using namespace std;
+
+using std::cin;
+using std::cout;
+using std::string;
+using std::endl;
+using std::cerr;
+using std::to_string;
+using std::runtime_error;
+using std::ifstream;
+using std::exception;
 
 class Student {
 private:
-    string fullName;
-    string birthDate;
-    string address;
+    string fullName; // ФИО
+    string birthDate; // Дата рождения
+    string address; // Адрес
     bool expelled; // учится или отчислен
     int grade;     // оценка за экзамен
 
 public:
-    Student(string fullName, string birthDate, string address)
-        : fullName(fullName), birthDate(birthDate), address(address), expelled(false), grade(0) {}
+    Student(string _fullName, string _birthDate, string _address)
+        : fullName(_fullName), birthDate(_birthDate), address(_address), expelled(false), grade(0) {}
 
     // Метод сдачи экзамена
     void takeExam() {
@@ -136,16 +147,20 @@ public:
 
     // Освобождение памяти при завершении работы
     ~Institute() {
-        for (int i = 0; i < numStudents; ++i) {
-            delete students[i]; // Удаляем каждый объект студента
+        if (numStudents) {  
+            for (int i = 0; i < numStudents; ++i) {
+                delete students[i];  // Освобождаем память для каждого объекта Student
+            }
+            delete[] students;  // Освобождаем память для массива указателей
+            numStudents = 0;
         }
-        delete[] students; // Удаляем массив указателей
     }
 };
 
 int main() {
     SetConsoleCP(1251);
     SetConsoleOutputCP(1251);
+    SetConsoleOutputCP(CP_UTF8);
     srand(static_cast<unsigned>(time(0))); // Инициализация генератора случайных чисел
 
     Institute institute;
@@ -187,5 +202,8 @@ int main() {
     cout << "Результаты сессии:" << endl;
     institute.printStudents();
 
+    institute.~Institute();
+
+    _CrtDumpMemoryLeaks();
     return 0;
 }
