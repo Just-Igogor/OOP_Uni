@@ -202,7 +202,7 @@ int main() {
     institute.printStudents();
 
     institute.~Institute();
-    
+
     _CrtDumpMemoryLeaks();
     return 0;
 }
