@@ -1,6 +1,10 @@
 #ifndef SORTING_H
 #define SORTING_H
-
+/*ЮФУ, ИКТИБ, МОП ЭВМ
+Объектно-ориентированное программирование
+КТбо2-6, Смелов Игорь Александрович
+Лабораторная работа 2
+19.09.2024*/
 #include <vector>
 #include <iostream>
 #include <fstream>
