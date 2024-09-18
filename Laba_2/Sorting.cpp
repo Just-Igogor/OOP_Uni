@@ -1,5 +1,5 @@
 #include "Sorting.h"
-1
+
 // Реализация конструктора базового класса Sorting
 Sorting::Sorting(const std::vector<int>& inputArray) {
     arr = inputArray;
