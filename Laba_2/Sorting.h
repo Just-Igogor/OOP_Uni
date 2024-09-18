@@ -1,57 +1,43 @@
-#pragma once
 #ifndef SORTING_H
 #define SORTING_H
 
+#include <vector>
 #include <iostream>
 #include <fstream>
-#include <utility>
-#include <vector>
 
 // Базовый класс для сортировки
 class Sorting {
 protected:
-    std::vector<int> arr;  // Динамический массив для сортировки
+    std::vector<int> arr;
 
 public:
-    // Конструктор для ввода массива вручную
     Sorting(const std::vector<int>& inputArray);
-
-    // Виртуальный метод сортировки
-    virtual void sort() = 0;
-
-    // Метод для вывода массива
-    void printArray();
+    virtual void sort() = 0;  // Виртуальный метод сортировки
+    void printArray();        // Метод для вывода массива
+    virtual ~Sorting() {}     // Виртуальный деструктор
 };
 
 // Класс для сортировки выбором
 class Choice : public Sorting {
 public:
-    // Конструктор наследует от базового класса
     Choice(const std::vector<int>& inputArray);
-
-    // Переопределение метода сортировки выбором
-    void sort() override;
+    void sort() override;  // Переопределение метода сортировки
 };
 
 // Класс для быстрой сортировки
 class Quick : public Sorting {
 public:
-    // Конструктор наследует от базового класса
     Quick(const std::vector<int>& inputArray);
-
-    // Переопределение метода сортировки (быстрая сортировка)
-    void sort() override;
-
+    void sort() override;  // Переопределение метода сортировки
 private:
     void quickSort(int low, int high);
     int partition(int low, int high);
 };
 
-// Класс для управления сортировками
+// Класс для управления процессом сортировки
 class SortManager {
 public:
-    // Метод для выбора источника ввода данных и сортировки
-    static void process();
+    void process();
 };
 
-#endif  // SORTING_H
+#endif // SORTING_H
