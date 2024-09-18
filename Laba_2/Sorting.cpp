@@ -42,7 +42,6 @@ void Quick::sort() {
 void Quick::quickSort(int low, int high) {
     if (low < high) {
         int pi = partition(low, high);
-
         quickSort(low, pi - 1);
         quickSort(pi + 1, high);
     }
@@ -67,8 +66,8 @@ int Quick::partition(int low, int high) {
 void SortManager::process() {
     while (true) {
         std::vector<int> inputArray;
-
         int inputChoice;
+
         std::cout << "\nВыберите способ ввода данных:\n";
         std::cout << "1. Ввод с консоли\n";
         std::cout << "2. Ввод из файла\n";
@@ -80,69 +79,77 @@ void SortManager::process() {
             break;
         }
 
-        if (inputChoice == 1) {
-            // Ввод с консоли
-            int size;
-            std::cout << "Введите количество элементов массива: ";
-            std::cin >> size;
+        try {
+            if (inputChoice == 1) {
+                int size;
+                std::cout << "Введите количество элементов массива: ";
+                std::cin >> size;
 
-            inputArray.resize(size);
-            std::cout << "Введите элементы массива: ";
-            for (int i = 0; i < size; ++i) {
-                std::cin >> inputArray[i];
+                if (size <= 0) throw std::invalid_argument("Размер массива должен быть положительным.");
+
+                inputArray.resize(size);
+                std::cout << "Введите элементы массива: ";
+                for (int i = 0; i < size; ++i) {
+                    std::cin >> inputArray[i];
+                }
+            }
+            else if (inputChoice == 2) {
+                std::string filename;
+                std::cout << "Введите имя файла: ";
+                std::cin >> filename;
+
+                std::ifstream file(filename);
+                if (!file.is_open()) {
+                    throw std::runtime_error("Не удалось открыть файл.");
+                }
+
+                int size;
+                file >> size;
+                if (size <= 0) throw std::invalid_argument("Размер массива должен быть положительным.");
+
+                inputArray.resize(size);
+                for (int i = 0; i < size; ++i) {
+                    file >> inputArray[i];
+                }
+            }
+            else {
+                throw std::invalid_argument("Неверный выбор.");
             }
         }
-        else if (inputChoice == 2) {
-            // Ввод из файла
-            std::string filename;
-            std::cout << "Введите имя файла: ";
-            std::cin >> filename;
-
-            std::ifstream file(filename);
-            if (!file.is_open()) {
-                std::cerr << "Не удалось открыть файл\n";
-                continue;  // Возвращаемся к выбору
-            }
-
-            int size;
-            file >> size;  // Чтение первой строки - размера массива
-            inputArray.resize(size);  // Устанавливаем размер массива
-
-            for (int i = 0; i < size; ++i) {
-                file >> inputArray[i];  // Заполняем массив из файла
-            }
-        }
-        else {
-            std::cerr << "Неверный выбор. Попробуйте снова.\n";
+        catch (const std::exception& e) {
+            std::cerr << "Ошибка: " << e.what() << "\n";
             continue;
         }
 
-        // Выбор типа сортировки
+        Sorting* sorter = nullptr;
+
         int sortChoice;
         std::cout << "\nВыберите тип сортировки:\n";
         std::cout << "1. Сортировка выбором\n";
         std::cout << "2. Быстрая сортировка\n";
         std::cin >> sortChoice;
 
-        if (sortChoice == 1) {
-            // Сортировка выбором
-            Choice choiceSort(inputArray);
-            std::cout << "Сортировка выбором:\n";
-            choiceSort.sort();
-            choiceSort.printArray();
+        try {
+            if (sortChoice == 1) {
+                sorter = new Choice(inputArray);
+            }
+            else if (sortChoice == 2) {
+                sorter = new Quick(inputArray);
+            }
+            else {
+                throw std::invalid_argument("Неверный выбор сортировки.");
+            }
+
+            sorter->sort();
+            sorter->printArray();
+            delete sorter;
         }
-        else if (sortChoice == 2) {
-            // Быстрая сортировка
-            Quick quickSort(inputArray);
-            std::cout << "Быстрая сортировка:\n";
-            quickSort.sort();
-            quickSort.printArray();
-        }
-        else {
-            std::cerr << "Неверный выбор сортировки. Попробуйте снова.\n";
+        catch (const std::exception& e) {
+            std::cerr << "Ошибка: " << e.what() << "\n";
+            if (sorter) delete sorter;
+            continue;
         }
 
-        // Предложить продолжить или завершить работу
         char continueChoice;
         std::cout << "Хотите продолжить? (y/n): ";
         std::cin >> continueChoice;
