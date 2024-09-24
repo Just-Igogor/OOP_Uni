@@ -15,9 +15,21 @@ class Shape {
 protected:
     int n = 0;                  // Количество вершин
     Point* vertices = nullptr;  // Массив точек
-    Point Сenter{};             // Центр моногоугольника
+    Point сenter{};             // Центр моногоугольника
     double square = 0;          // Площадь многоугольника
 public:
+    double getSquare() const {
+        return square;
+    }
+    Point getCenter() {
+        return сenter;
+    }
+    int getN() {
+        return n;
+    }
+    Point* getVertices() {
+        return vertices;
+    }
     virtual void input() = 0;    // Виртуальный метод для ввода координат
     virtual double area() = 0;   // Виртуальный метод для вычисления площади
     virtual Point center() = 0;  // Виртуальный метод для вычисления центра тяжести
@@ -53,28 +65,28 @@ public:
         for (int i = 0; i < n; i++) {
             if (i == n - 1) {
                 double l = sqrt((vertices[i].x - vertices[0].x) * (vertices[i].x - vertices[0].x) + (vertices[i].y - vertices[0].y) * (vertices[i].y - vertices[0].y));
-                Сenter.x += l * (vertices[i].x + vertices[(0) % n].x) / 2;
-                Сenter.y += l * (vertices[i].y + vertices[(0) % n].y) / 2;
+                сenter.x += l * (vertices[i].x + vertices[(0) % n].x) / 2;
+                сenter.y += l * (vertices[i].y + vertices[(0) % n].y) / 2;
                 P += l;
             }
             else {
                 double l = sqrt((vertices[i].x - vertices[i + 1].x) * (vertices[i].x - vertices[i + 1].x) + (vertices[i].y - vertices[i + 1].y) * (vertices[i].y - vertices[i + 1].y));
-                Сenter.x += l * (vertices[i].x + vertices[(i + 1) % n].x) / 2;
-                Сenter.y += l * (vertices[i].y + vertices[(i + 1) % n].y) / 2;
+                сenter.x += l * (vertices[i].x + vertices[(i + 1) % n].x) / 2;
+                сenter.y += l * (vertices[i].y + vertices[(i + 1) % n].y) / 2;
                 P += l;
             }
         }
-        Сenter.x /= P;
-        Сenter.y /= P;
+        сenter.x /= P;
+        сenter.y /= P;
     }
 
     void rotate(double angle) override {
         double rad = angle * M_PI / 180.0;
         for (int i = 0; i < n; i++) {
-            double x = vertices[i].x - Сenter.x;
-            double y = vertices[i].y - Сenter.y;
-            vertices[i].x = Сenter.x + (x * std::cos(rad) - y * std::sin(rad));
-            vertices[i].y = Сenter.y + (x * std::sin(rad) + y * std::cos(rad));
+            double x = vertices[i].x - сenter.x;
+            double y = vertices[i].y - сenter.y;
+            vertices[i].x = сenter.x + (x * std::cos(rad) - y * std::sin(rad));
+            vertices[i].y = сenter.y + (x * std::sin(rad) + y * std::cos(rad));
         }
     }
 
@@ -117,28 +129,28 @@ public:
         for (int i = 0; i < n; i++) {
             if (i == n - 1) {
                 double l = sqrt((vertices[i].x - vertices[0].x) * (vertices[i].x - vertices[0].x) + (vertices[i].y - vertices[0].y) * (vertices[i].y - vertices[0].y));
-                Сenter.x += l * (vertices[i].x + vertices[(0) % n].x) / 2;
-                Сenter.y += l * (vertices[i].y + vertices[(0) % n].y) / 2;
+                сenter.x += l * (vertices[i].x + vertices[(0) % n].x) / 2;
+                сenter.y += l * (vertices[i].y + vertices[(0) % n].y) / 2;
                 P += l;
             }
             else {
                 double l = sqrt((vertices[i].x - vertices[i + 1].x) * (vertices[i].x - vertices[i + 1].x) + (vertices[i].y - vertices[i + 1].y) * (vertices[i].y - vertices[i + 1].y));
-                Сenter.x += l * (vertices[i].x + vertices[(i + 1) % n].x) / 2;
-                Сenter.y += l * (vertices[i].y + vertices[(i + 1) % n].y) / 2;
+                сenter.x += l * (vertices[i].x + vertices[(i + 1) % n].x) / 2;
+                сenter.y += l * (vertices[i].y + vertices[(i + 1) % n].y) / 2;
                 P += l;
             }
         }
-        Сenter.x /= P;
-        Сenter.y /= P;
+        сenter.x /= P;
+        сenter.y /= P;
     }
 
     void rotate(double angle) override {
         double rad = angle * M_PI / 180.0;
         for (int i = 0; i < n; i++) {
-            double x = vertices[i].x - Сenter.x;
-            double y = vertices[i].y - Сenter.y;
-            vertices[i].x = Сenter.x + (x * std::cos(rad) - y * std::sin(rad));
-            vertices[i].y = Сenter.y + (x * std::sin(rad) + y * std::cos(rad));
+            double x = vertices[i].x - сenter.x;
+            double y = vertices[i].y - сenter.y;
+            vertices[i].x = сenter.x + (x * std::cos(rad) - y * std::sin(rad));
+            vertices[i].y = сenter.y + (x * std::sin(rad) + y * std::cos(rad));
         }
     }
 
@@ -169,24 +181,82 @@ public:
 // Класс Operations для работы с фигурами
 class Operations {
 public:
-    static bool compare(Shape* first, Shape* second) {
-        return first->area() == second->area();
-    }
+    //Метод для сравнения площадей
+    static int Compare(Shape* first, Shape* second) {
+        if (first->getSquare() > second->getSquare()) {
+            return 0;
+        }
+        else if (first->getSquare() < second->getSquare()) {
+            return 1;
+        }
+        else {
+            return 2;
+        }
+    };
 
+    //Метод для проверки пересечения фигур
     static bool isIntersect(Shape* first, Shape* second) {
-        Point c1 = first->center();
-        Point c2 = second->center();
-        return (c1.x == c2.x && c1.y == c2.y);
+        Point temp1, temp2;
+        temp1 = first->getCenter();
+        temp2 = second->getCenter();
+        double d = sqrt((temp1.x - temp2.x) * (temp1.x - temp2.x) + (temp1.y - temp2.y) * (temp1.y - temp2.y));
+
+        double radiusFirst = 0;
+        Point* vert = first->getVertices();
+        for (int i = 0; i < first->getN(); i++) {
+            double dist = sqrt((temp1.x - vert[i].x) * (temp1.x - vert[i].x) + (temp1.y - vert[i].y) * (temp1.y - vert[i].y));
+            if (dist > radiusFirst) {
+                radiusFirst = dist;
+            }
+        }
+
+        double radiusSecond = 0;
+        vert = second->getVertices();
+        for (int i = 0; i < second->getN(); i++) {
+            double dist = sqrt((temp2.x - vert[i].x) * (temp2.x - vert[i].x) + (temp2.y - vert[i].y) * (temp2.y - vert[i].y));
+            if (dist > radiusSecond) {
+                radiusSecond = dist;
+            }
+        }
+
+        return d <= (radiusFirst + radiusSecond);
     }
 
+    //Метод для проверки включения одной фигуры в другую
     static bool isInclude(Shape* first, Shape* second) {
-        Point c1 = first->center();
-        Point c2 = second->center();
-        return (std::abs(c1.x - c2.x) < 10 && std::abs(c1.y - c2.y) < 10);
+        Point temp1, temp2;
+        temp1 = first->getCenter();
+        temp2 = second->getCenter();
+
+        double radiusFirst = 0;
+        Point* vert = first->getVertices();
+        for (int i = 0; i < first->getN(); i++) {
+            double dist = sqrt((temp1.x - vert[i].x) * (temp1.x - vert[i].x) + (temp1.y - vert[i].y) * (temp1.y - vert[i].y));
+            if (dist > radiusFirst) {
+                radiusFirst = dist;
+            }
+        }
+        double radiusSecond = 0;
+        vert = second->getVertices();
+        for (int i = 0; i < second->getN(); i++) {
+            double dist = sqrt((temp2.x - vert[i].x) * (temp2.x - vert[i].x) + (temp2.y - vert[i].y) * (temp2.y - vert[i].y));
+            if (dist > radiusSecond) {
+                radiusSecond = dist;
+            }
+        }
+
+
+        // Расстояние между центрами двух фигур
+        double centerDistance = sqrt((temp1.x - temp2.x) * (temp1.x - temp2.x) + (temp1.y - temp2.y) * (temp1.y - temp2.y));
+
+        // Проверка, включена ли одна окружность в другую
+        return centerDistance + radiusFirst <= radiusSecond || centerDistance + radiusSecond <= radiusFirst;
     }
 };
 
 int main() {
+    setlocale(LC_ALL, "ru");
+
     bool continueProgram = true;
 
     while (continueProgram) {
@@ -213,7 +283,7 @@ int main() {
 
             Operations op;
 
-            if (Operations::compare(shape1, shape2)) {
+            if (Operations::Compare(shape1, shape2)) {
                 std::cout << "Фигуры равны по площади." << std::endl;
             }
             else {
