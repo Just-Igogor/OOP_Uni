@@ -13,8 +13,10 @@ public:
 // Абстрактный базовый класс Shape
 class Shape {
 protected:
-    Point* vertices = nullptr;  // Массив точек
     int n = 0;                  // Количество вершин
+    Point* vertices = nullptr;  // Массив точек
+    Point Сenter{};             // Центр моногоугольника
+    double square = 0;          // Площадь многоугольника
 public:
     virtual void input() = 0;    // Виртуальный метод для ввода координат
     virtual double area() = 0;   // Виртуальный метод для вычисления площади
@@ -47,35 +49,32 @@ public:
     }
 
     Point center() override {
-        double xc = 0, yc = 0;
         double P = 0;
         for (int i = 0; i < n; i++) {
             if (i == n - 1) {
                 double l = sqrt((vertices[i].x - vertices[0].x) * (vertices[i].x - vertices[0].x) + (vertices[i].y - vertices[0].y) * (vertices[i].y - vertices[0].y));
-                xc += l * (vertices[i].x + vertices[(0) % n].x) / 2;
-                yc += l * (vertices[i].y + vertices[(0) % n].y) / 2;
+                Сenter.x += l * (vertices[i].x + vertices[(0) % n].x) / 2;
+                Сenter.y += l * (vertices[i].y + vertices[(0) % n].y) / 2;
                 P += l;
             }
             else {
                 double l = sqrt((vertices[i].x - vertices[i + 1].x) * (vertices[i].x - vertices[i + 1].x) + (vertices[i].y - vertices[i + 1].y) * (vertices[i].y - vertices[i + 1].y));
-                xc += l * (vertices[i].x + vertices[(i + 1) % n].x) / 2;
-                yc += l * (vertices[i].y + vertices[(i + 1) % n].y) / 2;
+                Сenter.x += l * (vertices[i].x + vertices[(i + 1) % n].x) / 2;
+                Сenter.y += l * (vertices[i].y + vertices[(i + 1) % n].y) / 2;
                 P += l;
             }
         }
-        xc /= P;
-        yc /= P;
-        return { xc, yc };
+        Сenter.x /= P;
+        Сenter.y /= P;
     }
 
     void rotate(double angle) override {
-        Point c = center();
         double rad = angle * M_PI / 180.0;
         for (int i = 0; i < n; i++) {
-            double x = vertices[i].x - c.x;
-            double y = vertices[i].y - c.y;
-            vertices[i].x = c.x + (x * std::cos(rad) - y * std::sin(rad));
-            vertices[i].y = c.y + (x * std::sin(rad) + y * std::cos(rad));
+            double x = vertices[i].x - Сenter.x;
+            double y = vertices[i].y - Сenter.y;
+            vertices[i].x = Сenter.x + (x * std::cos(rad) - y * std::sin(rad));
+            vertices[i].y = Сenter.y + (x * std::sin(rad) + y * std::cos(rad));
         }
     }
 
@@ -114,35 +113,32 @@ public:
     }
 
     Point center() override {
-        double xc = 0, yc = 0;
         double P = 0;
         for (int i = 0; i < n; i++) {
             if (i == n - 1) {
                 double l = sqrt((vertices[i].x - vertices[0].x) * (vertices[i].x - vertices[0].x) + (vertices[i].y - vertices[0].y) * (vertices[i].y - vertices[0].y));
-                xc += l * (vertices[i].x + vertices[(0) % n].x) / 2;
-                yc += l * (vertices[i].y + vertices[(0) % n].y) / 2;
+                Сenter.x += l * (vertices[i].x + vertices[(0) % n].x) / 2;
+                Сenter.y += l * (vertices[i].y + vertices[(0) % n].y) / 2;
                 P += l;
             }
             else {
                 double l = sqrt((vertices[i].x - vertices[i + 1].x) * (vertices[i].x - vertices[i + 1].x) + (vertices[i].y - vertices[i + 1].y) * (vertices[i].y - vertices[i + 1].y));
-                xc += l * (vertices[i].x + vertices[(i + 1) % n].x) / 2;
-                yc += l * (vertices[i].y + vertices[(i + 1) % n].y) / 2;
+                Сenter.x += l * (vertices[i].x + vertices[(i + 1) % n].x) / 2;
+                Сenter.y += l * (vertices[i].y + vertices[(i + 1) % n].y) / 2;
                 P += l;
             }
         }
-        xc /= P;
-        yc /= P;
-        return { xc, yc };
+        Сenter.x /= P;
+        Сenter.y /= P;
     }
 
     void rotate(double angle) override {
-        Point c = center();
         double rad = angle * M_PI / 180.0;
         for (int i = 0; i < n; i++) {
-            double x = vertices[i].x - c.x;
-            double y = vertices[i].y - c.y;
-            vertices[i].x = c.x + (x * std::cos(rad) - y * std::sin(rad));
-            vertices[i].y = c.y + (x * std::sin(rad) + y * std::cos(rad));
+            double x = vertices[i].x - Сenter.x;
+            double y = vertices[i].y - Сenter.y;
+            vertices[i].x = Сenter.x + (x * std::cos(rad) - y * std::sin(rad));
+            vertices[i].y = Сenter.y + (x * std::sin(rad) + y * std::cos(rad));
         }
     }
 
