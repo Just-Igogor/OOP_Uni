@@ -53,6 +53,8 @@ void Heptagon::move(int dx, int dy) {
     for (int i = 0; i < n; i++) {
         vertices[i].x += dx;
         vertices[i].y += dy;
+        сenter.x += dx;
+        сenter.y += dx;
     }
 }
 
@@ -110,7 +112,10 @@ void Octagon::move(int dx, int dy) {
     for (int i = 0; i < n; i++) {
         vertices[i].x += dx;
         vertices[i].y += dy;
+        сenter.x += dx;
+        сenter.y += dx;
     }
+
 }
 
 Shape* FactoryShape::createShape(char ch) {
