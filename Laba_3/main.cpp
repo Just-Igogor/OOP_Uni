@@ -1,258 +1,4 @@
-#include <iostream>
-#include <cmath>
-#include <exception>
-
-const double M_PI = 3.1415;
-
-// Класс Point для представления точек
-class Point {
-public:
-    double x = 0, y = 0;
-};
-
-// Абстрактный базовый класс Shape
-class Shape {
-protected:
-    int n = 0;                  // Количество вершин
-    Point* vertices = nullptr;  // Массив точек
-    Point сenter{};             // Центр моногоугольника
-    double square = 0;          // Площадь многоугольника
-public:
-    double getSquare() const {
-        return square;
-    }
-    Point getCenter() {
-        return сenter;
-    }
-    int getN() {
-        return n;
-    }
-    Point* getVertices() {
-        return vertices;
-    }
-    virtual void input() = 0;    // Виртуальный метод для ввода координат
-    virtual double area() = 0;   // Виртуальный метод для вычисления площади
-    virtual Point center() = 0;  // Виртуальный метод для вычисления центра тяжести
-    virtual void rotate(double angle) = 0;  // Метод вращения
-    virtual void move(int dx, int dy) = 0;  // Метод перемещения
-    virtual ~Shape() { delete[] vertices; }
-};
-
-// Класс Heptagon (Семиугольник)
-class Heptagon : public Shape {
-public:
-    Heptagon() {
-        n = 7;
-        vertices = new Point[n];
-    }
-
-    void input() override {
-        for (int i = 0; i < n; i++) {
-            std::cin >> vertices[i].x >> vertices[i].y;
-        }
-    }
-
-    double area() override {
-        double result = 0.0;
-        for (int i = 0; i < n; i++) {
-            result += (vertices[i].x * vertices[(i + 1) % n].y) - (vertices[i].y * vertices[(i + 1) % n].x);
-        }
-        return std::fabs(result) / 2.0;
-    }
-
-    Point center() override {
-        double P = 0;
-        for (int i = 0; i < n; i++) {
-            if (i == n - 1) {
-                double l = sqrt((vertices[i].x - vertices[0].x) * (vertices[i].x - vertices[0].x) + (vertices[i].y - vertices[0].y) * (vertices[i].y - vertices[0].y));
-                сenter.x += l * (vertices[i].x + vertices[(0) % n].x) / 2;
-                сenter.y += l * (vertices[i].y + vertices[(0) % n].y) / 2;
-                P += l;
-            }
-            else {
-                double l = sqrt((vertices[i].x - vertices[i + 1].x) * (vertices[i].x - vertices[i + 1].x) + (vertices[i].y - vertices[i + 1].y) * (vertices[i].y - vertices[i + 1].y));
-                сenter.x += l * (vertices[i].x + vertices[(i + 1) % n].x) / 2;
-                сenter.y += l * (vertices[i].y + vertices[(i + 1) % n].y) / 2;
-                P += l;
-            }
-        }
-        сenter.x /= P;
-        сenter.y /= P;
-    }
-
-    void rotate(double angle) override {
-        double rad = angle * M_PI / 180.0;
-        for (int i = 0; i < n; i++) {
-            double x = vertices[i].x - сenter.x;
-            double y = vertices[i].y - сenter.y;
-            vertices[i].x = сenter.x + (x * std::cos(rad) - y * std::sin(rad));
-            vertices[i].y = сenter.y + (x * std::sin(rad) + y * std::cos(rad));
-        }
-    }
-
-    void move(int dx, int dy) override {
-        for (int i = 0; i < n; i++) {
-            vertices[i].x += dx;
-            vertices[i].y += dy;
-        }
-    }
-
-    ~Heptagon() {
-        delete[] vertices;
-    }
-};
-
-// Класс Octagon (Восьмиугольник)
-class Octagon : public Shape {
-public:
-    Octagon() {
-        n = 8;
-        vertices = new Point[n];
-    }
-
-    void input() override {
-        for (int i = 0; i < n; i++) {
-            std::cin >> vertices[i].x >> vertices[i].y;
-        }
-    }
-
-    double area() override {
-        double result = 0.0;
-        for (int i = 0; i < n; i++) {
-            result += (vertices[i].x * vertices[(i + 1) % n].y) - (vertices[i].y * vertices[(i + 1) % n].x);
-        }
-        return std::fabs(result) / 2.0;
-    }
-
-    Point center() override {
-        double P = 0;
-        for (int i = 0; i < n; i++) {
-            if (i == n - 1) {
-                double l = sqrt((vertices[i].x - vertices[0].x) * (vertices[i].x - vertices[0].x) + (vertices[i].y - vertices[0].y) * (vertices[i].y - vertices[0].y));
-                сenter.x += l * (vertices[i].x + vertices[(0) % n].x) / 2;
-                сenter.y += l * (vertices[i].y + vertices[(0) % n].y) / 2;
-                P += l;
-            }
-            else {
-                double l = sqrt((vertices[i].x - vertices[i + 1].x) * (vertices[i].x - vertices[i + 1].x) + (vertices[i].y - vertices[i + 1].y) * (vertices[i].y - vertices[i + 1].y));
-                сenter.x += l * (vertices[i].x + vertices[(i + 1) % n].x) / 2;
-                сenter.y += l * (vertices[i].y + vertices[(i + 1) % n].y) / 2;
-                P += l;
-            }
-        }
-        сenter.x /= P;
-        сenter.y /= P;
-    }
-
-    void rotate(double angle) override {
-        double rad = angle * M_PI / 180.0;
-        for (int i = 0; i < n; i++) {
-            double x = vertices[i].x - сenter.x;
-            double y = vertices[i].y - сenter.y;
-            vertices[i].x = сenter.x + (x * std::cos(rad) - y * std::sin(rad));
-            vertices[i].y = сenter.y + (x * std::sin(rad) + y * std::cos(rad));
-        }
-    }
-
-    void move(int dx, int dy) override {
-        for (int i = 0; i < n; i++) {
-            vertices[i].x += dx;
-            vertices[i].y += dy;
-        }
-    }
-
-    ~Octagon() {
-        delete[] vertices;
-    }
-};
-
-// Фабрика для создания объектов класса Shape
-class FactoryShape {
-public:
-    static Shape* createShape(char ch) {
-        switch (ch) {
-        case 'H': return new Heptagon();
-        case 'O': return new Octagon();
-        default: return nullptr; 
-        }
-    }
-};
-
-// Класс Operations для работы с фигурами
-class Operations {
-public:
-    //Метод для сравнения площадей
-    static int Compare(Shape* first, Shape* second) {
-        if (first->getSquare() > second->getSquare()) {
-            return 0;
-        }
-        else if (first->getSquare() < second->getSquare()) {
-            return 1;
-        }
-        else {
-            return 2;
-        }
-    };
-
-    //Метод для проверки пересечения фигур
-    static bool isIntersect(Shape* first, Shape* second) {
-        Point temp1, temp2;
-        temp1 = first->getCenter();
-        temp2 = second->getCenter();
-        double d = sqrt((temp1.x - temp2.x) * (temp1.x - temp2.x) + (temp1.y - temp2.y) * (temp1.y - temp2.y));
-
-        double radiusFirst = 0;
-        Point* vert = first->getVertices();
-        for (int i = 0; i < first->getN(); i++) {
-            double dist = sqrt((temp1.x - vert[i].x) * (temp1.x - vert[i].x) + (temp1.y - vert[i].y) * (temp1.y - vert[i].y));
-            if (dist > radiusFirst) {
-                radiusFirst = dist;
-            }
-        }
-
-        double radiusSecond = 0;
-        vert = second->getVertices();
-        for (int i = 0; i < second->getN(); i++) {
-            double dist = sqrt((temp2.x - vert[i].x) * (temp2.x - vert[i].x) + (temp2.y - vert[i].y) * (temp2.y - vert[i].y));
-            if (dist > radiusSecond) {
-                radiusSecond = dist;
-            }
-        }
-
-        return d <= (radiusFirst + radiusSecond);
-    }
-
-    //Метод для проверки включения одной фигуры в другую
-    static bool isInclude(Shape* first, Shape* second) {
-        Point temp1, temp2;
-        temp1 = first->getCenter();
-        temp2 = second->getCenter();
-
-        double radiusFirst = 0;
-        Point* vert = first->getVertices();
-        for (int i = 0; i < first->getN(); i++) {
-            double dist = sqrt((temp1.x - vert[i].x) * (temp1.x - vert[i].x) + (temp1.y - vert[i].y) * (temp1.y - vert[i].y));
-            if (dist > radiusFirst) {
-                radiusFirst = dist;
-            }
-        }
-        double radiusSecond = 0;
-        vert = second->getVertices();
-        for (int i = 0; i < second->getN(); i++) {
-            double dist = sqrt((temp2.x - vert[i].x) * (temp2.x - vert[i].x) + (temp2.y - vert[i].y) * (temp2.y - vert[i].y));
-            if (dist > radiusSecond) {
-                radiusSecond = dist;
-            }
-        }
-
-
-        // Расстояние между центрами двух фигур
-        double centerDistance = sqrt((temp1.x - temp2.x) * (temp1.x - temp2.x) + (temp1.y - temp2.y) * (temp1.y - temp2.y));
-
-        // Проверка, включена ли одна окружность в другую
-        return centerDistance + radiusFirst <= radiusSecond || centerDistance + radiusSecond <= radiusFirst;
-    }
-};
+#include "Sorting.h"
 
 int main() {
     setlocale(LC_ALL, "ru");
@@ -261,6 +7,7 @@ int main() {
 
     while (continueProgram) {
         try {
+
             Shape* shape1 = nullptr;
             Shape* shape2 = nullptr;
             char type;
@@ -268,59 +15,110 @@ int main() {
             std::cout << "Выберите первую фигуру (H - Heptagon, O - Octagon): ";
             std::cin >> type;
             shape1 = FactoryShape::createShape(type);
-            if(!shape1) throw std::invalid_argument("Invalid shape type!");  // Генерация исключения для неизвестного типа
+            if (!shape1) throw 1;  // Генерация исключения для неизвестного типа
             shape1->input();
-            std::cout << shape1->area() << std::endl;
-            std::cout << shape1->center().x << " " << shape1->center().y << std::endl;
+            shape1->area();
+            shape1->center();
+            std::cout << "Площадь фигуры равна: " << shape1->getSquare() << std::endl;
+            std::cout << "Центр тяжести:\n x = " << shape1->getCenter().x << " y = " << shape1->getCenter().y << std::endl;
+
+            std::cout << "Хотите переместить фигуру? (0 - да, 1 - нет): ";
+            std::cin >> continueProgram;
+            if (continueProgram == 0) {
+                int dx, dy;
+                std::cout << "Введите число на которое передвинуть фигуру по оси X: ";
+                std::cin >> dx;
+                std::cout << "Введите число на которое передвинуть фигуру по оси Y: ";
+                std::cin >> dy;
+                shape1->move(dx, dy);
+            }
+
+            std::cout << "Хотите повернуть фигуру? (0 - да, 1 - нет): ";
+            std::cin >> continueProgram;
+            if (continueProgram == 0) {
+                int angle;
+                std::cout << "Введите угол поворота фигуры: ";
+                std::cin >> angle;
+                shape1->rotate(angle);
+            }
 
             std::cout << "Выберите вторую фигуру (H - Heptagon, O - Octagon): ";
             std::cin >> type;
             shape2 = FactoryShape::createShape(type);
-            if (!shape2) throw std::invalid_argument("Invalid shape type!");  // Генерация исключения для неизвестного типа
+            if (!shape2) throw 2;  // Генерация исключения для неизвестного типа
             shape2->input();
-            std::cout << shape2->area() << std::endl;
-            std::cout << shape2->center().x << " " << shape2->center().y << std::endl;
+            shape2->area();
+            shape2->center();
+            std::cout << "Площадь фигуры равна: " << shape2->getSquare() << std::endl;
+            std::cout << shape2->getCenter().x << " " << shape2->getCenter().y << std::endl;
 
-            Operations op;
+            std::cout << "Хотите переместить фигуру? (0 - да, 1 - нет): ";
+            std::cin >> continueProgram;
+            if (continueProgram == 0) {
+                int dx, dy;
+                std::cout << "Введите число на которое передвинуть фигуру по оси X: ";
+                std::cin >> dx;
+                std::cout << "Введите число на которое передвинуть фигуру по оси Y: ";
+                std::cin >> dy;
+                shape2->move(dx, dy);
+            }
 
-            if (Operations::Compare(shape1, shape2)) {
-                std::cout << "Фигуры равны по площади." << std::endl;
+            std::cout << "Хотите повернуть фигуру? (0 - да, 1 - нет): ";
+            std::cin >> continueProgram;
+            if (continueProgram == 0) {
+                int angle;
+                std::cout << "Введите угол поворота фигуры: ";
+                std::cin >> angle;
+                shape2->rotate(angle);
+            }
+
+            int Tem = Operations::Compare(shape1, shape2);
+            if (Tem == 2) {
+                std::cout << "Фигуры равны по площади" << std::endl;
+            }
+            else if(Tem == 1){
+                std::cout << "Площадь второй фигуры больше первой" << std::endl;
             }
             else {
-                std::cout << "Фигуры не равны по площади." << std::endl;
+                std::cout << "Площадь первой фигуры больше второй" << std::endl;
             }
 
-            if (Operations::isIntersect(shape1, shape2)) {
-                std::cout << "Фигуры пересекаются." << std::endl;
-            }
-            else {
-                std::cout << "Фигуры не пересекаются." << std::endl;
-            }
+            bool flag = true;
 
             if (Operations::isInclude(shape1, shape2)) {
                 std::cout << "Одна фигура включена в другую." << std::endl;
             }
             else {
                 std::cout << "Фигуры не включены друг в друга." << std::endl;
+
+                if (Operations::isIntersect(shape1, shape2)) {
+                    std::cout << "Фигуры пересекаются." << std::endl;
+                    flag = false;
+                }
+            }
+
+            if (flag) {
+                std::cout << "Фигуры не пересекаются." << std::endl;
             }
 
             // Освобождаем память
             delete shape1;
             delete shape2;
-
         }
-        catch (const std::invalid_argument& e) {
-            std::cerr << "Ошибка: " << e.what() << std::endl;
-        }
-        catch (...) {
-            std::cerr << "Произошла неизвестная ошибка." << std::endl;
+        catch (int num) {
+            if (num == 1) {
+                std::cerr << "Ошибка:Неверный тип первой фигуры!" << std::endl;
+            }
+            else if (num == 2) {
+                std::cerr << "Ошибка:Неверный тип второй фигуры!" << std::endl;
+            }
         }
 
         // Спрашиваем у пользователя, хочет ли он продолжить
         std::cout << "Хотите завершить программу? (0 - да, 1 - нет): ";
         std::cin >> continueProgram;
     }
-
+    
     return 0;
 }
 /*
@@ -332,6 +130,18 @@ H
 10 -1
 8 -4
 4 -4
-74
-5.57143 0.714286
+Площадь фигуры равна: 74
+Центр тяжести:
+ x = 5.39416 y = 1.09094
+
+H
+2 -1
+2 3
+5 6
+8 3
+9 -1
+8 -3
+4 -3
+Площадь фигуры равна: 46
+5.33499 0.941767
 */
