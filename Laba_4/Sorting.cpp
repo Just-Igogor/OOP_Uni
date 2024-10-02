@@ -24,6 +24,30 @@ void displayUniqueMovieTitles(const std::string& filename) {
     }
 }
 
+// Функция для вывода названий фильмов без повторов (пункт a)
+void displayUniqueMovieTitles(const std::string& filename) {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        throw std::runtime_error("Не удалось открыть файл!");
+    }
+
+    std::set<std::string> movie_titles; // Контейнер для хранения уникальных названий фильмов
+    std::string line;
+
+    while (std::getline(file, line)) {
+        // Считываем только название фильма (предполагаем, что это первое слово в строке)
+        std::string movie_name = line.substr(0, line.find(' '));
+        movie_titles.insert(movie_name);
+    }
+
+    file.close();
+
+    std::cout << "Перечень названий фильмов без повторов:" << std::endl;
+    for (const auto& title : movie_titles) {
+        std::cout << title << std::endl;
+    }
+}
+
 // Функция для вывода среднего процента заполнения зала для запрашиваемого фильма (пункт b)
 void displayMovieOccupancy(const std::vector<Cinema>& cinemas, const std::string& movie_name) {
     // Поиск фильма в векторе
