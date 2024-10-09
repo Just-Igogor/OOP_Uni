@@ -84,5 +84,41 @@ namespace CinemaCsh {
 
             return cinemas;
         }
+
+        static void Main(string[] args) {
+            string filename = @"C:\Users\igogo\source\repos\OOP_C#\OOP_C#\Cinema.txt";
+            int choice = 1;
+
+            while (choice == 1) {
+                try {
+                    Console.WriteLine("Выберите пункт программы:\n1. Перечень названий фильмов без повторов\n2. Средний процент заполнения зала для фильма\nВаш выбор: ");
+                    choice = int.Parse(Console.ReadLine());
+
+                    if (choice == 1) {
+                        // Выполнение пункта a
+                        DisplayUniqueMovieTitles(filename);
+                    }
+                    else if (choice == 2) {
+                        // Выполнение пункта b
+                        var cinemas = ReadCinemaData(filename);
+
+                        Console.Write("Введите название фильма: ");
+                        string movieName = Console.ReadLine();
+
+                        DisplayMovieOccupancy(cinemas, movieName);
+                    }
+                    else {
+                        Console.WriteLine("Некорректный выбор!");
+                    }
+                }
+                catch (Exception ex) {
+                    Console.WriteLine(ex.Message);
+                    return;
+                }
+
+                Console.Write("Хотите завершить программу? (0 - да, 1 - нет): ");
+                choice = int.Parse(Console.ReadLine());
+            }
+        }
     }
 }
