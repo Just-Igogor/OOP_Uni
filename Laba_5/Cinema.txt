@@ -1,1 +1,8 @@
-
+Inception 100 80 15 18:30
+Interstellar 120 100 18 20:00
+Tenet 150 120 20 19:00
+Inception 80 70 14 21:00
+Avatar 200 150 25 17:30
+Interstellar 100 90 18 22:00
+Tenet 120 110 19 16:00
+Avatar 150 140 24 19:30
