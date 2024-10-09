@@ -46,5 +46,18 @@ namespace CinemaCsh {
                 throw new Exception("Ошибка: Не удалось выполнить пункт а!");
             }
         }
+
+        // Метод для вывода среднего процента заполнения зала для указанного фильма (пункт b)
+        public static void DisplayMovieOccupancy(List<Cinema> cinemas, string movieName) {
+            var selectedMovies = cinemas.Where(c => c.movie_name.Equals(movieName, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            if (selectedMovies.Count > 0) {
+                double averageOccupancy = selectedMovies.Average(c => c.getOccupancy());
+                Console.WriteLine($"Средний процент заполнения зала для фильма \"{movieName}\": {averageOccupancy:F2}%");
+            }
+            else {
+                Console.WriteLine($"Фильм \"{movieName}\" не найден.");
+            }
+        }
     }
 }
