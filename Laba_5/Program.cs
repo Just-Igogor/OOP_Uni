@@ -1,3 +1,9 @@
+/*ЮФУ, ИКТИБ, МОП ЭВМ
+Объектно-ориентированное программирование
+КТбо2-6, Смелов Игорь Александрович
+Лабораторная работа 5
+10.10.2024*/
+
 using System.Diagnostics;
 using System.Xml.Linq;
 using static System.Net.Mime.MediaTypeNames;
