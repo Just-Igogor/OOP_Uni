@@ -59,5 +59,30 @@ namespace CinemaCsh {
                 Console.WriteLine($"Фильм \"{movieName}\" не найден.");
             }
         }
+
+        // Метод для чтения данных из файла и создания объектов Cinema
+        public static List<Cinema> ReadCinemaData(string filename) {
+            var cinemas = new List<Cinema>();
+
+            try {
+                // Чтение данных из файла и создание объектов Cinema
+                foreach (var line in File.ReadLines(filename)) {
+                    var parts = line.Split(' '); // Разделяем данные по пробелами
+
+                    string name = parts[0];
+                    int seats = int.Parse(parts[1]);
+                    int view = int.Parse(parts[2]);
+                    int price = int.Parse(parts[3]);
+                    string time = parts[4];
+
+                    cinemas.Add(new Cinema(name, seats, view, price, time));
+                }
+            }
+            catch (Exception) {
+                throw new Exception("Ошибка: Не удалось открыть файл!");
+            }
+
+            return cinemas;
+        }
     }
 }
