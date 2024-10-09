@@ -25,4 +25,26 @@ namespace CinemaCsh {
 		return ((double)viewers / total_seats) * 100;
         }   
     }
+    internal class Program {
+        // Метод для вывода уникальных названий фильмов (пункт a)
+        public static void DisplayUniqueMovieTitles(string filename) {
+            try {
+                var movieTitles = new HashSet<string>(); // Хэш-сет для уникальных названий
+
+                // Чтение файла построчно
+                foreach (var line in File.ReadLines(filename)) {
+                    var movieName = line.Split(' ')[0]; // Первое слово - это название фильма
+                    movieTitles.Add(movieName);         // Добавляем название в хэш-сет
+                }
+
+                Console.WriteLine("Перечень названий фильмов без повторов:");
+                foreach (var title in movieTitles) {
+                    Console.WriteLine(title);
+                }
+            }
+            catch (Exception) {
+                throw new Exception("Ошибка: Не удалось выполнить пункт а!");
+            }
+        }
+    }
 }
